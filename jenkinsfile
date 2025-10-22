@@ -1,0 +1,37 @@
+pipeline {
+    agent any  // Means: run on any available Jenkins agent
+
+    environment {
+        IMAGE_NAME = "jenkins-ci-lab"
+        IMAGE_TAG = "latest"
+    }
+
+    stages {
+        stage('Build') {
+            steps {
+                echo "🔧 Building Docker image..."
+                sh 'docker build -t ${IMAGE_NAME}:${IMAGE_TAG} .'
+            }
+        }
+
+        stage('Test') {
+            steps {
+                echo "🧪 Running tests..."
+                sh 'docker run --rm ${IMAGE_NAME}:${IMAGE_TAG} npm test'
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                echo "🚀 Deploying (mock)..."
+                // Here you could run: sh 'docker push ...' or deploy to k8s
+            }
+        }
+    }
+
+    post {
+        always {
+            echo "📋 Pipeline completed at: ${new Date()}"
+        }
+    }
+}
