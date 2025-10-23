@@ -14,10 +14,6 @@ pipeline {
         stage('Build') {
             steps {
                 echo "🔧 Building Docker image using Docker Tool..."
-                // withDockerTool places the specified Docker Tool binary on the PATH
-                withDockerTool(toolName: env.DOCKER_TOOL_NAME) {
-                    // Now we can call 'docker' directly
-                    sh "docker build -t ${IMAGE_NAME}:${IMAGE_TAG} ."
                 }
             }
         }
