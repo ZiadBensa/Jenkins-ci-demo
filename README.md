@@ -1,41 +1,34 @@
 pipeline {
-    agent any // run on any available Jenkins agent
+    agent any
 
-    // NOTE: Configure a Docker Tool in Jenkins (Manage Jenkins -> Global Tool Configuration)
-    // Give it a name (e.g. 'docker-20.10.12') and ensure agents can access the docker binary.
-    // Then set DOCKER_TOOL_NAME to that name below or in Jenkins job configuration.
     environment {
         IMAGE_NAME = "jenkins-ci-lab"
-        IMAGE_TAG = "latest"
-        DOCKER_TOOL_NAME = "docker" // change this to the name you configured in Jenkins
     }
 
     stages {
         stage('Build') {
             steps {
-                echo "🔧 Building Docker image using Docker Tool..."
-                // withDockerTool places the specified Docker Tool binary on the PATH
-                withDockerTool(toolName: env.DOCKER_TOOL_NAME) {
-                    // Now we can call 'docker' directly
-                    sh "docker build -t ${IMAGE_NAME}:${IMAGE_TAG} ."
+                script {
+                    echo "🔧 Building Docker image..."
+                    def app = docker.build("${IMAGE_NAME}:latest")
                 }
             }
         }
 
         stage('Test') {
             steps {
-                echo "🧪 Running tests inside Docker image..."
-                withDockerTool(toolName: env.DOCKER_TOOL_NAME) {
-                    // Call 'docker' directly to run the container for testing
-                    sh "docker run --rm ${IMAGE_NAME}:${IMAGE_TAG} npm test"
+                script {
+                    echo "🧪 Running tests..."
+                    docker.image("${IMAGE_NAME}:latest").inside {
+                        sh 'npm test'
+                    }
                 }
             }
         }
 
         stage('Deploy') {
             steps {
-                echo "🚀 Deploying (mock)..."
-                // For a real deploy, you might use 'withDockerRegistry' here to push the image.
+                echo "🚀 Deploying (simulated)..."
             }
         }
     }
