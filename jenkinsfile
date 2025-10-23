@@ -4,11 +4,6 @@ pipeline {
     // NOTE: Configure a Docker Tool in Jenkins (Manage Jenkins -> Global Tool Configuration)
     // Give it a name (e.g. 'docker-20.10.12') and ensure agents can access the docker binary.
     // Then set DOCKER_TOOL_NAME to that name below or in Jenkins job configuration.
-    environment {
-        IMAGE_NAME = "jenkins-ci-lab"
-        IMAGE_TAG = "latest"
-        DOCKER_TOOL_NAME = "docker" // change this to the name you configured in Jenkins
-    }
 
     stages {
         stage('Build') {
